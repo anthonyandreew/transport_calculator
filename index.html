@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f2f2f7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Транспорт">
+  <title>Калькулятор транспорта</title>
+  <style>
+    :root{
+      color-scheme: light dark;
+      --bg:#f2f2f7;
+      --card:#fff;
+      --text:#111;
+      --muted:#6e6e73;
+      --border:#e5e5ea;
+      --accent:#007aff;
+      --good:#167a37;
+      --good-bg:#eaf7ee;
+      --input:#f7f7f9;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#000;
+        --card:#1c1c1e;
+        --text:#f5f5f7;
+        --muted:#a1a1a6;
+        --border:#2c2c2e;
+        --accent:#0a84ff;
+        --good:#30d158;
+        --good-bg:#102a18;
+        --input:#2c2c2e;
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    main{
+      width:min(100%,620px);
+      margin:0 auto;
+      padding:20px 16px calc(28px + env(safe-area-inset-bottom));
+    }
+    h1{
+      margin:4px 0 6px;
+      font-size:28px;
+      line-height:1.08;
+      letter-spacing:-.02em;
+    }
+    .subtitle{
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:18px;
+      margin-bottom:14px;
+    }
+    .label{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:6px;
+    }
+    .big{
+      font-size:34px;
+      line-height:1.05;
+      font-weight:750;
+      letter-spacing:-.03em;
+      font-variant-numeric:tabular-nums;
+    }
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      padding:10px 0;
+      border-top:1px solid var(--border);
+    }
+    .row:first-of-type{margin-top:12px}
+    .row span:last-child{
+      font-weight:650;
+      text-align:right;
+      font-variant-numeric:tabular-nums;
+    }
+    .input-wrap{
+      position:relative;
+      margin-top:8px;
+    }
+    input{
+      width:100%;
+      min-height:56px;
+      border:1px solid var(--border);
+      background:var(--input);
+      color:var(--text);
+      border-radius:14px;
+      padding:0 48px 0 16px;
+      font:inherit;
+      font-size:20px;
+      font-weight:650;
+      outline:none;
+    }
+    input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(0,122,255,.16);
+    }
+    .rub{
+      position:absolute;
+      right:16px;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--muted);
+      font-weight:650;
+    }
+    .result{
+      background:var(--good-bg);
+    }
+    .result .big{color:var(--good)}
+    .hint{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      margin-top:9px;
+    }
+    .formula{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      margin-top:12px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Транспорт в офис</h1>
+  <p class="subtitle">Сравнение денежной выплаты 8 925 ₽ с корпоративным такси.</p>
+
+  <section class="card">
+    <div class="label">Расчёт 1 · фиксировано</div>
+    <div class="big">687 ₽/день</div>
+    <div class="row"><span>Выплата</span><span>8 925 ₽/мес.</span></div>
+    <div class="row"><span>Офис</span><span>3 раза в неделю</span></div>
+    <div class="row"><span>Среднее</span><span>13 дней/мес.</span></div>
+    <div class="hint">До этой суммы выплата полностью покрывает твой транспорт туда и обратно.</div>
+  </section>
+
+  <section class="card">
+    <div class="label">Средняя стоимость такси в одну сторону</div>
+    <div class="input-wrap">
+      <input id="taxiOneWay" type="text" inputmode="decimal" autocomplete="off" value="700" aria-label="Средняя стоимость такси в одну сторону">
+      <span class="rub">₽</span>
+    </div>
+  </section>
+
+  <section class="card result" aria-live="polite">
+    <div class="label">Расчёт 2 · дневной лимит</div>
+    <div class="big" id="compareDaily">897 ₽/день</div>
+    <div class="hint">До этой суммы собственный транспорт + выплата финансово не хуже корпоративного такси.</div>
+  </section>
+
+  <section class="card">
+    <div class="row"><span>Такси туда + обратно</span><span id="taxiDaily">1 400 ₽</span></div>
+    <div class="row"><span>Твои 15% за день</span><span id="personalDaily">210 ₽</span></div>
+    <div class="row"><span>Твои 15% за месяц</span><span id="personalMonthly">2 730 ₽</span></div>
+    <div class="row"><span>Порог своего транспорта в месяц</span><span id="compareMonthly">11 655 ₽</span></div>
+    <div class="formula">Формула: 8 925 / 13 + (такси в одну сторону × 2 × 15%)</div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var MONTHLY_ALLOWANCE = 8925;
+  var OFFICE_DAYS = 13;
+  var TAXI_SHARE = 0.15;
+  var BASE_DAILY = MONTHLY_ALLOWANCE / OFFICE_DAYS;
+
+  var input = document.getElementById('taxiOneWay');
+
+  function parseValue(raw){
+    raw = String(raw || '')
+      .replace(/\s/g,'')
+      .replace(',','.')
+      .replace(/[^\d.]/g,'');
+    var n = parseFloat(raw);
+    if(!isFinite(n) || n < 0) return 0;
+    return Math.min(n, 1000000);
+  }
+
+  function formatRub(n){
+    return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ') + ' ₽';
+  }
+
+  function update(){
+    var oneWay = parseValue(input.value);
+    var taxiDay = oneWay * 2;
+    var personalDay = taxiDay * TAXI_SHARE;
+    var personalMonth = personalDay * OFFICE_DAYS;
+    var compareDay = BASE_DAILY + personalDay;
+    var compareMonth = compareDay * OFFICE_DAYS;
+
+    document.getElementById('taxiDaily').textContent = formatRub(taxiDay);
+    document.getElementById('personalDaily').textContent = formatRub(personalDay);
+    document.getElementById('personalMonthly').textContent = formatRub(personalMonth);
+    document.getElementById('compareDaily').textContent = formatRub(compareDay) + '/день';
+    document.getElementById('compareMonthly').textContent = formatRub(compareMonth);
+  }
+
+  input.addEventListener('input', update);
+  input.addEventListener('change', update);
+  input.addEventListener('blur', update);
+  update();
+})();
+</script>
+</body>
+</html>
