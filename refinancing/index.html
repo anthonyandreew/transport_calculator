@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <meta name="description" content="Сравните текущие кредиты с рефинансированием: общие выплаты, платёж в месяц, переплата и срок.">
+  <title>Выгодно ли рефинансирование? — Калькулятор</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="calculator.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><span class="brand-icon" aria-hidden="true">↗</span> Считаем спокойно</div>
+    <div class="eyebrow">КАЛЬКУЛЯТОР РЕФИНАНСИРОВАНИЯ</div>
+    <h1>Новый кредит.<br><span>Будет ли выгоднее?</span></h1>
+    <p class="intro">Сравните, сколько ещё заплатите по текущим кредитам и сколько — после рефинансирования.</p>
+  </header>
+  <form id="calculator" novalidate>
+    <div class="columns">
+      <section class="panel" aria-labelledby="current-title">
+        <div class="section-title"><span class="step">1</span><h2 id="current-title">Текущие кредиты</h2></div>
+        <label class="count-label" for="loan-count">Сколько у вас кредитов? <select id="loan-count"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></label>
+        <div id="loans"></div>
+        <div class="subtotal" aria-live="polite"><div><span>В месяц сейчас</span><strong id="current-monthly">—</strong></div><div><span>Осталось выплатить</span><strong id="current-total">—</strong></div></div>
+      </section>
+      <section class="panel" aria-labelledby="new-title">
+        <div class="section-title"><span class="step">2</span><h2 id="new-title">Рефинансирование</h2></div>
+        <p class="section-hint">Введите условия, которые предлагает банк.</p>
+        <div class="fields">
+          <label for="principal">Сумма нового кредита<span class="input-wrap"><input id="principal" inputmode="decimal" placeholder="Например, 600 000" autocomplete="off"><span>₽</span></span></label>
+          <label for="new-months">Срок нового кредита<span class="input-wrap"><input id="new-months" inputmode="numeric" placeholder="Например, 36" autocomplete="off"><span>мес.</span></span></label>
+        </div>
+        <fieldset class="mode"><legend>Как посчитать ежемесячный платёж?</legend><div class="segmented"><label><input type="radio" name="mode" value="payment" checked><span>Платёж известен</span></label><label><input type="radio" name="mode" value="rate"><span>Знаю ставку</span></label></div></fieldset>
+        <label id="payment-field" for="new-payment">Ежемесячный платёж<span class="input-wrap"><input id="new-payment" inputmode="decimal" placeholder="Платёж из предложения банка" autocomplete="off"><span>₽</span></span></label>
+        <label id="rate-field" for="rate" hidden>Годовая процентная ставка<span class="input-wrap"><input id="rate" inputmode="decimal" placeholder="Например, 18,5" autocomplete="off"><span>%</span></span><small>Платёж рассчитаем как аннуитетный: одинаковый каждый месяц.</small></label>
+        <details class="extra"><summary>Страховка и другие расходы</summary><label for="fees">Дополнительные расходы<span class="input-wrap"><input id="fees" inputmode="decimal" placeholder="0" autocomplete="off"><span>₽</span></span><small>Только расходы из своих денег. Уже включённые в сумму кредита или платежи повторно не добавляйте.</small></label></details>
+        <div class="note"><span aria-hidden="true">↳</span><p>Меньше платёж — не всегда меньше расходы. Сравним и общую сумму, и срок.</p></div>
+      </section>
+    </div>
+    <div id="error" class="error" role="alert" hidden></div>
+    <div class="actions"><button type="submit" class="primary">Рассчитать выгоду <span aria-hidden="true">→</span></button><button type="button" id="example" class="secondary">Попробовать на примере</button></div>
+    <p class="privacy">Все расчёты выполняются на вашем устройстве. Данные никуда не отправляются.</p>
+  </form>
+  <section id="results" hidden aria-labelledby="result-title" aria-live="polite" tabindex="-1"></section>
+  <footer>Расчёт для кредитов с фиксированным ежемесячным платежом, без будущих досрочных погашений. Суммы округлены до рубля; итоговый график банка может немного отличаться.</footer>
+</main>
+</body>
+</html>
