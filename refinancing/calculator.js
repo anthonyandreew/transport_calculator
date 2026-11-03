@@ -13,6 +13,8 @@
     const newTotal = payment * offer.months + offer.fees;
     const knownBalance = loans.every(l => l.balance !== null);
     const balance = knownBalance ? loans.reduce((s, l) => s + l.balance, 0) : null;
+    const principalDifference = knownBalance ? offer.principal - balance : null;
+    const extraCash = knownBalance ? Math.max(0, principalDifference) : null;
     const ends = [...new Set([...loans.map(l => l.months), offer.months])].sort((a, b) => a - b);
     let start = 1;
     const timeline = ends.map(end => {
@@ -24,7 +26,8 @@
       monthlySavings: currentMonthly - payment, monthsDifference: offer.months - currentMonths,
       currentInterest: knownBalance ? currentTotal - balance : null,
       newInterest: newTotal - offer.principal, balance,
-      principalDifference: knownBalance ? offer.principal - balance : null, timeline };
+      principalDifference, extraCash,
+      savingsWithCash: knownBalance && principalDifference >= 0 ? currentTotal - newTotal + extraCash : null, timeline };
   }
   const api = { calculate, paymentFor };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

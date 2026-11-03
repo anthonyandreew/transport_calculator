@@ -37,3 +37,13 @@ test('five loans and shorter refinance produce the correct payment timeline', ()
   assert.equal(r.currentTotal, 15000);
   assert.deepEqual(r.timeline.map(t => [t.current, t.next]), [[5000, 4000], [4000, 4000], [3000, 4000], [2000, 0], [1000, 0]]);
 });
+test('additional cash is separate from gross payments and adjusts the comparison', () => {
+  const r = calculate(loans, { ...offer, principal: 700000, payment: 25000 });
+  assert.equal(r.extraCash, 50000);
+  assert.equal(r.savings, -36000);
+  assert.equal(r.savingsWithCash, 14000);
+  assert.equal(r.savingsWithCash, r.currentInterest - r.newInterest);
+  assert.equal(calculate(loans, offer).savingsWithCash, 36000);
+  assert.equal(calculate(loans, { ...offer, principal: 600000 }).savingsWithCash, null);
+  assert.equal(calculate([{ ...loans[0], balance: null }], offer).savingsWithCash, null);
+});
